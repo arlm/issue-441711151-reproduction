@@ -50,4 +50,8 @@
     <string name="sections">sections</string>
     <string name="documents">documents</string>
     <string name="show_toast">Show Toast</string>
+    <string name="item_4">Item 4</string>
+    <string name="item_3">Item 3</string>
+    <string name="item_2">Item 2</string>
+    <string name="item_1">Item 1</string>
 </resources>

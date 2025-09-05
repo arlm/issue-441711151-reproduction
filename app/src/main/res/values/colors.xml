@@ -4,5 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <item name="corporate_blue" type="color">#303AB2</item>
     <item name="corporate_light_gray" type="color">#E3E7E9</item>
+    <item name="corporate_gray_e" type="color">#EEF1F2</item>
 
 </resources>
