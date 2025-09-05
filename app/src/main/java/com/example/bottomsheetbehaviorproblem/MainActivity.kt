@@ -1,17 +1,21 @@
 package com.example.bottomsheetbehaviorproblem
 
+import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import android.view.Menu
-import android.view.MenuItem
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import com.example.bottomsheetbehaviorproblem.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -39,6 +43,30 @@ class MainActivity : AppCompatActivity() {
                 getString(R.string.replace_with_your_own_action), Snackbar.LENGTH_LONG)
                 .setAction(getString(R.string.action), null)
                 .setAnchorView(R.id.fab).show()
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM)
+        {
+            // Enable edge-to-edge
+            window.setDecorFitsSystemWindows (false);
+            window.statusBarColor = android.graphics.Color.TRANSPARENT;
+            window.navigationBarColor = android.graphics.Color.TRANSPARENT;
+        }
+
+        val rootView = findViewById<View>(android.R.id.content);
+
+        ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+            // Handle the insets (e.g., adjust padding or margins)
+            val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            view.setPadding(
+                systemBarsInsets.left,
+                systemBarsInsets.top,
+                systemBarsInsets.right,
+                systemBarsInsets.bottom
+            )
+
+            // Return the insets to indicate they have been consumed
+            insets
         }
     }
 
