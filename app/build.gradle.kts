@@ -42,10 +42,15 @@ dependencies {
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+
     implementation(libs.material)
+    implementation(libs.androidx.material.icons.core)
+    implementation(libs.androidx.material.icons.extended) // Only if you added it in the TOML file and need it
+
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

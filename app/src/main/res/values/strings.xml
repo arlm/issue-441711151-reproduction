@@ -44,4 +44,6 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
     <string name="open_bottom_sheet">Open BottomSheet</string>
+    <string name="replace_with_your_own_action">Replace with your own action</string>
+    <string name="action">Action</string>
 </resources>
