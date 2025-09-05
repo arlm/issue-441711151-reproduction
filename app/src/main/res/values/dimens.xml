@@ -3,12 +3,13 @@
     <dimen name="primary_text_alpha">0.87</dimen>
     <dimen name="fab_margin_bottom">76dp</dimen>
     <dimen name="bottom_bar_height">60dp</dimen>
+    <dimen name="button_width">32dp</dimen>
     <dimen name="max_text_size">16sp</dimen>
     <dimen name="min_text_size">6sp</dimen>
     <dimen name="step_granularity">2sp</dimen>
     <dimen name="padding_vertical">20dp</dimen>
     <dimen name="image_max_width">25dp</dimen>
-    <dimen name="margin_right">6dp</dimen>
+    <dimen name="margin">6dp</dimen>
     <dimen name="min_width">12dp</dimen>
     <dimen name="empty_dp">0dp</dimen>
 </resources>

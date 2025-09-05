@@ -7,6 +7,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/toolbar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -27,112 +28,108 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/viewer_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/bottom_bar_height"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/bottom_bar_height"
         android:animateLayoutChanges="true"
         android:background="@color/corporate_light_gray"
         android:layout_gravity="bottom"
         android:layout_alignParentBottom="true">
         <ImageButton
             android:id="@+id/prev_document_button"
-            android:layout_width="@dimen/bottom_bar_height"
-            android:layout_height="match_parent"
-            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/bottom_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             android:paddingVertical="@dimen/padding_vertical"
+            android:contentDescription="@string/previous"
             android:scaleType="centerInside"
             android:background="@android:color/transparent"
             android:src="@drawable/arrow_left" />
         <ImageView
             android:id="@+id/icon_documents"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            app:layout_constraintWidth_min="@dimen/max_text_size"
-            app:layout_constraintWidth_max="@dimen/image_max_width"
-            app:layout_constrainedWidth="true"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/bottom_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/prev_document_button"
+            android:layout_marginEnd="@dimen/min_text_size"
+            android:contentDescription="@string/documents"
             android:scaleType="centerInside"
-            android:layout_marginRight="@dimen/min_text_size"
-            app:layout_constraintRight_toLeftOf="@id/document_counter_text"
-            app:layout_constraintLeft_toRightOf="@id/prev_document_button"
             android:background="@android:color/transparent"
             android:src="@drawable/icon_stack" />
         <TextView
             android:id="@+id/document_counter_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/bottom_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/icon_documents"
             android:background="@android:color/transparent"
             android:alpha="@dimen/primary_text_alpha"
             android:textColor="@android:color/black"
-            app:layout_constraintRight_toLeftOf="@id/next_document_button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="@dimen/min_text_size"
-            android:autoSizeMaxTextSize="@dimen/max_text_size"
-            android:autoSizeStepGranularity="@dimen/step_granularity"
-            tools:text="11111/1111"/>
+            android:gravity="center"
+            android:text="@string/value"/>
         <ImageButton
             android:id="@+id/next_document_button"
-            android:layout_width="@dimen/bottom_bar_height"
-            android:layout_height="match_parent"
-            app:layout_constraintLeft_toRightOf="@id/document_counter_text"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/bottom_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/document_counter_text"
             android:paddingVertical="@dimen/padding_vertical"
+            android:contentDescription="@string/next"
             android:scaleType="centerInside"
             android:background="@android:color/transparent"
             android:src="@drawable/arrow_right" />
-        <View
-            android:id="@+id/empty"
-            android:layout_width="@dimen/empty_dp"
-            android:layout_height="match_parent"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintWidth_default="wrap"
-            app:layout_constraintWidth_min="@dimen/step_granularity"
-            app:layout_constraintRight_toLeftOf="@id/prev_section_button"
-            app:layout_constraintLeft_toRightOf="@id/next_document_button"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+
         <ImageButton
             android:id="@+id/prev_section_button"
-            android:layout_width="@dimen/bottom_bar_height"
-            android:layout_height="match_parent"
-            app:layout_constraintLeft_toRightOf="@id/empty"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/bottom_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/icon_sections"
             android:paddingVertical="@dimen/max_text_size"
-            android:scaleType="centerInside"
+            android:contentDescription="@string/previous"
             android:background="@android:color/transparent"
-            android:src="@drawable/arrow_left" />
+            android:scaleType="centerInside"
+            android:src="@drawable/arrow_left"
+            />
+
         <ImageView
             android:id="@+id/icon_sections"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:adjustViewBounds="true"
-            app:layout_constraintWidth_min="@dimen/min_width"
-            app:layout_constraintWidth_max="@dimen/image_max_width"
-            app:layout_constrainedWidth="true"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/bottom_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/section_counter_text"
+            android:layout_marginEnd="@dimen/margin"
+            android:contentDescription="@string/sections"
             android:scaleType="centerInside"
-            android:layout_marginRight="@dimen/margin_right"
-            app:layout_constraintLeft_toRightOf="@id/prev_section_button"
-            app:layout_constraintRight_toLeftOf="@id/section_counter_text"
             android:background="@android:color/transparent"
             android:src="@drawable/icon_file_navigation" />
         <TextView
             android:id="@+id/section_counter_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintRight_toLeftOf="@id/next_section_button"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_height="@dimen/bottom_bar_height"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/next_section_button"
             android:background="@android:color/transparent"
             android:alpha="@dimen/primary_text_alpha"
             android:textColor="@android:color/black"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="@dimen/min_text_size"
-            android:autoSizeMaxTextSize="@dimen/max_text_size"
-            android:autoSizeStepGranularity="@dimen/step_granularity"
-            tools:text="1111/1111" />
+            android:gravity="center"
+            android:text="@string/value" />
         <ImageButton
             android:id="@+id/next_section_button"
-            android:layout_width="@dimen/bottom_bar_height"
-            android:layout_height="match_parent"
+            android:layout_width="@dimen/button_width"
+            android:layout_height="@dimen/bottom_bar_height"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:paddingVertical="@dimen/max_text_size"
+            android:contentDescription="@string/next"
             android:scaleType="centerInside"
             android:background="@android:color/transparent"
             android:src="@drawable/arrow_right" />
@@ -145,6 +142,7 @@
         android:layout_gravity="bottom|end"
         android:layout_marginEnd="@dimen/fab_margin_end"
         android:layout_marginBottom="@dimen/fab_margin_bottom"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:contentDescription="@string/show_toast"
+        app:srcCompat="@android:drawable/ic_dialog_alert" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

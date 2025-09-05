@@ -1,19 +1,25 @@
 package com.example.bottomsheetbehaviorproblem
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.example.bottomsheetbehaviorproblem.databinding.ActivityMainBinding
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -22,6 +28,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
+
+    private var originalFabTranslationY: Float = 0f
+    private var isFabMoved = false // To track if FAB has been moved up
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,35 +47,99 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
 
-        binding.fab.setOnClickListener { view ->
-            Snackbar.make(view,
-                getString(R.string.replace_with_your_own_action), Snackbar.LENGTH_LONG)
-                .setAction(getString(R.string.action), null)
-                .setAnchorView(R.id.fab).show()
+        // Store the original translationY when the layout is first created
+        binding.fab.post {
+            originalFabTranslationY = binding.fab.translationY
         }
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM)
-        {
+        binding.fab.setOnClickListener { view -> showSnackbarAndMoveFab(view) }
+
+        adjustEdgeToEdge()
+    }
+
+    private fun showSnackbarAndMoveFab(view: View) {
+        val fabText = getString(R.string.replace_with_your_own_action)
+        val approximateSnackbarHeight = resources.getDimensionPixelSize(R.dimen.button_width)
+
+        // Move FAB up before Snackbar is shown
+        if (!isFabMoved) {
+            binding.fab.animate()
+                .translationY(originalFabTranslationY - approximateSnackbarHeight - 3 * resources.getDimensionPixelSize(R.dimen.margin)) // Add a small margin
+                .setDuration(250)
+                .start()
+            isFabMoved = true
+        }
+
+        val snackbar = Snackbar.make(view, fabText, Snackbar.LENGTH_LONG)
+            .setAction(getString(R.string.action), null)
+            .setAnchorView(R.id.viewer_toolbar)
+            .addCallback(object : Snackbar.Callback() {
+                override fun onShown(sb: Snackbar?) {
+                    super.onShown(sb)
+                }
+
+                override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                    super.onDismissed(transientBottomBar, event)
+                    // Snackbar is dismissed, move FAB back down if it was moved
+                    if (isFabMoved) {
+                        binding.fab.animate()
+                            .translationY(originalFabTranslationY) // Move back to original position
+                            .setDuration(250)
+                            .start()
+                        isFabMoved = false
+                    }
+                }
+            })
+        snackbar.show()
+    }
+
+    private fun adjustEdgeToEdge() {
+        // Enable edge-to-edge
+        // For API 34+ this is typically handled by themes (e.g., Theme.Material3.DayNight.NoActionBar)
+        // and android:windowSoftInputMode="adjustResize" or by default.
+        // The explicit decorFitsSystemWindows(false) is good for older APIs.
+        @Suppress("DEPRECATION")
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             // Enable edge-to-edge
-            window.setDecorFitsSystemWindows (false);
-            window.statusBarColor = android.graphics.Color.TRANSPARENT;
-            window.navigationBarColor = android.graphics.Color.TRANSPARENT;
+            window.setDecorFitsSystemWindows(false)
+            window.statusBarColor = Color.TRANSPARENT
+            window.navigationBarColor = Color.TRANSPARENT
         }
 
-        val rootView = findViewById<View>(android.R.id.content);
-
-        ViewCompat.setOnApplyWindowInsetsListener(rootView) { view, insets ->
+        // Use binding.root as the view for the listener if it's the outermost view
+        // that should react to window insets for left/right padding.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, insets ->
             // Handle the insets (e.g., adjust padding or margins)
             val systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(
+
+            // Apply left and right padding to the root view
+            view.updatePadding(
                 systemBarsInsets.left,
-                systemBarsInsets.top,
-                systemBarsInsets.right,
-                systemBarsInsets.bottom
+                systemBarsInsets.right
+                // Do not set top/bottom here for the root view,
+                // as they will be handled by the toolbar and viewer_toolbar
             )
 
-            // Return the insets to indicate they have been consumed
-            insets
+            // Apply top padding to the toolbar
+            binding.toolbar.updatePadding(top = systemBarsInsets.top)
+            binding.toolbar.updateLayoutParams<AppBarLayout.LayoutParams> {
+                height = systemBarsInsets.top + getActionBarSizeInPixels()
+            }
+
+            // Apply bottom padding to the viewer_toolbar
+            binding.viewerToolbar.updatePadding(bottom = systemBarsInsets.bottom)
+
+            val bottomBarHeightPixels = resources.getDimensionPixelSize(R.dimen.bottom_bar_height)
+            val marginPixels = resources.getDimensionPixelSize(R.dimen.margin)
+            binding.fab.updateLayoutParams<CoordinatorLayout.LayoutParams> {
+                bottomMargin = systemBarsInsets.bottom + bottomBarHeightPixels + 2 * marginPixels
+            }
+
+            // Return the insets to indicate they have been consumed or handled
+            // If you want other views to also receive these insets, you might return insets.consumeSystemWindowInsets()
+            // or just insets if you've only partially consumed them.
+
+            WindowInsetsCompat.CONSUMED // Or return 'insets' if other views might need them
         }
     }
 
@@ -89,5 +162,14 @@ class MainActivity : AppCompatActivity() {
     override fun onSupportNavigateUp(): Boolean {
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+
+    fun getActionBarSizeInPixels(): Int {
+        val typedValue = TypedValue()
+        if (theme.resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
+            return TypedValue.complexToDimensionPixelSize(typedValue.data, resources.displayMetrics)
+        }
+        // Fallback or error handling if the attribute is not found (shouldn't happen for actionBarSize)
+        return 0 // Or throw an exception, or return a default value
     }
 }
