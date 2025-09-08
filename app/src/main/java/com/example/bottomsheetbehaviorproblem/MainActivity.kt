@@ -28,9 +28,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
     private lateinit var navController: NavController
-
     private var originalFabTranslationY: Float = 0f
-    private var isFabMoved = false // To track if FAB has been moved up
+    private var isFabMoved = false
+
+    private var snackbar: Snackbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,15 +63,24 @@ class MainActivity : AppCompatActivity() {
         val approximateSnackbarHeight = resources.getDimensionPixelSize(R.dimen.button_width)
 
         // Move FAB up before Snackbar is shown
-        if (!isFabMoved) {
+        if (!(snackbar?.isShown ?: false)) {
+            isFabMoved = true
             binding.fab.animate()
                 .translationY(originalFabTranslationY - approximateSnackbarHeight - 3 * resources.getDimensionPixelSize(R.dimen.margin)) // Add a small margin
                 .setDuration(250)
+                .withStartAction {
+                    binding.fab.isEnabled = false
+                } .withEndAction {
+                    binding.fab.isEnabled = true
+                }
                 .start()
+        } else {
+            snackbar?.dismiss()
+            snackbar = null
             isFabMoved = true
         }
 
-        val snackbar = Snackbar.make(view, fabText, Snackbar.LENGTH_LONG)
+        snackbar = Snackbar.make(view, fabText, Snackbar.LENGTH_LONG)
             .setAction(getString(R.string.action), null)
             .setAnchorView(R.id.viewer_toolbar)
             .addCallback(object : Snackbar.Callback() {
@@ -80,17 +90,33 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
                     super.onDismissed(transientBottomBar, event)
+
                     // Snackbar is dismissed, move FAB back down if it was moved
-                    if (isFabMoved) {
-                        binding.fab.animate()
-                            .translationY(originalFabTranslationY) // Move back to original position
-                            .setDuration(250)
-                            .start()
-                        isFabMoved = false
+                    if (!(snackbar?.isShown ?: false)) {
+                        if (isFabMoved) {
+                            binding.fab.animate()
+                                .translationY(originalFabTranslationY) // Move back to original position
+                                .setStartDelay(250)
+                                .setDuration(250)
+                                .withStartAction {
+                                    binding.fab.isEnabled = false
+                                }
+                                .withEndAction {
+                                    isFabMoved = false
+                                    binding.fab.isEnabled = true
+                                    snackbar = null
+                                }
+                                .start()
+                        } else {
+                            snackbar = null
+                        }
+                    } else {
+                        snackbar = null
                     }
                 }
             })
-        snackbar.show()
+
+        snackbar?.show()
     }
 
     private fun adjustEdgeToEdge() {

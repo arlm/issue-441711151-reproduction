@@ -25,6 +25,12 @@ class FirstFragment : Fragment() {
     ): View {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
+
+        binding.buttonBottomSheetFirst.setOnClickListener {
+            activity?.let {
+                ViewerBottomSheetFragment().show(it.supportFragmentManager, "ViewerDialogFragment")
+            }
+        }
         return binding.root
 
     }
